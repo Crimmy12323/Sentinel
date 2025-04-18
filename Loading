@@ -183,7 +183,7 @@ G2L["a"].MouseButton1Click:Connect(function()
 
     if G2L["1"] then G2L["1"]:Destroy() end
 
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Crimmy12323/Sentinel/refs/heads/main/Sentinel-Loader"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Crimmy12323/Mic-Up/refs/heads/main/micupscript"))()
 end)
 
 return G2L["1"], require
