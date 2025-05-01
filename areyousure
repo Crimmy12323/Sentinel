@@ -7,9 +7,6 @@ local PlayerGui = Player:WaitForChild("PlayerGui")
 G2L["1"] = Instance.new("ScreenGui", PlayerGui);
 G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
 
-local blurEffect = Instance.new("BlurEffect", G2L["1"])
-blurEffect.Size = 0
-
 G2L["2"] = Instance.new("Frame", G2L["1"]);
 G2L["2"]["BorderSizePixel"] = 0;
 G2L["2"]["BackgroundColor3"] = Color3.fromRGB(24, 24, 26);
@@ -126,14 +123,12 @@ G2L["b"].MouseLeave:Connect(function()
 end)
 
 local function removeUI()
-    local blurTween = TweenService:Create(blurEffect, tweenInfo, {Size = 0})
     local uiTween = TweenService:Create(G2L["2"], tweenInfo, {Transparency = 1})
     local strokeTween1 = TweenService:Create(G2L["4"], tweenInfo, {Transparency = 1})
     local strokeTween2 = TweenService:Create(G2L["7"], tweenInfo, {Transparency = 1})
     local strokeTween3 = TweenService:Create(G2L["a"], tweenInfo, {Transparency = 1})
     local strokeTween4 = TweenService:Create(G2L["d"], tweenInfo, {Transparency = 1})
 
-    blurTween:Play()
     uiTween:Play()
     strokeTween1:Play()
     strokeTween2:Play()
@@ -146,17 +141,18 @@ local function removeUI()
 end
 
 local function showUI()
-    blurEffect.Size = 24
 end
 
 showUI()
 
+-- Yes Button Callback
 G2L["8"].MouseButton1Click:Connect(function()
     removeUI()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/edgeiy/infiniteyield/master/source"))()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/Crimmy12323/Mic-Up/refs/heads/main/micupscript"))()
 end)
 
+-- No Button Callback
 G2L["b"].MouseButton1Click:Connect(function()
     removeUI()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/Crimmy12323/Mic-Up/refs/heads/main/micupscript"))()
