@@ -132,7 +132,7 @@ titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 titleLabel.BackgroundTransparency = 1
 
 local versionLabel = Instance.new("TextLabel", G2L["5"])
-versionLabel.Text = "v6.5"
+versionLabel.Text = "v6.7"
 versionLabel.Size = UDim2.new(0, 60, 0, 36)
 versionLabel.Position = UDim2.new(0.02375, 0, 0.41667, 0)
 versionLabel.TextSize = 17
