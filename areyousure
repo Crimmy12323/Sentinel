@@ -75,6 +75,7 @@ local teleporting = false
 
 --// Teleport positions
 local positions = {
+    Vector3.new(58.99, 30.96, -465.08)
     Vector3.new(57.50, 50.23, -761.23),
     Vector3.new(58.25, 54.78, -1136.79),
     Vector3.new(55.81, 48.19, -1548.85),
