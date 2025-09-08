@@ -1,8 +1,10 @@
 --// Services
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
+local VirtualUser = game:GetService("VirtualUser")
 local player = game.Players.LocalPlayer
 
+--// UI Setup
 local gui = Instance.new("ScreenGui")
 gui.Name = "TeleportUI"
 gui.ResetOnSpawn = false
@@ -71,6 +73,7 @@ Instance.new("UICorner", bar).CornerRadius = UDim.new(1, 0)
 
 local teleporting = false
 
+--// Teleport positions
 local positions = {
     Vector3.new(57.50, 50.23, -761.23),
     Vector3.new(58.25, 54.78, -1136.79),
@@ -82,6 +85,7 @@ local positions = {
     Vector3.new(55.53, -914.25, -3569.47)
 }
 
+--// Cleanup helper
 local function cleanupPlatforms()
     for _, part in ipairs(workspace:GetChildren()) do
         if part:IsA("Part") and part.Name == "TeleportPlatform" then
@@ -90,11 +94,13 @@ local function cleanupPlatforms()
     end
 end
 
+--// Get player's root part
 local function getRoot()
     local char = player.Character or player.CharacterAdded:Wait()
     return char:WaitForChild("HumanoidRootPart")
 end
 
+--// Teleport sequence logic
 local function teleportSequence()
     local rootPart = getRoot()
 
@@ -136,6 +142,7 @@ local function teleportSequence()
     end
 end
 
+--// Animate button click
 local function animateButtonPress()
     TweenService:Create(button, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
         Size = UDim2.new(0.87, 0, 0.23, 0),
@@ -150,6 +157,45 @@ local function animateButtonPress()
     }):Play()
 end
 
+--// Reset stage attributes to 0
+local function resetStageAttributes()
+    for i = 1, 7 do
+        local stage = workspace.Stages:FindFirstChild(tostring(i))
+        if stage then
+            local attributes = {"MaxDurability", "MaxSize", "MinDurability", "MinSize"}
+            for _, attrName in ipairs(attributes) do
+                local attr = stage:FindFirstChild(attrName)
+                if attr and attr:IsA("NumberValue") then
+                    attr.Value = 0
+                end
+            end
+        end
+    end
+end
+
+--// Tool giver function
+local function giveMissingTools()
+    local toolsFolder = game:GetService("ReplicatedStorage"):WaitForChild("Tools")
+    local backpack = player:WaitForChild("Backpack")
+
+    for _, tool in ipairs(toolsFolder:GetChildren()) do
+        if tool:IsA("Tool") and not backpack:FindFirstChild(tool.Name) then
+            local clone = tool:Clone()
+            clone.Parent = backpack
+        end
+    end
+end
+
+-- Initial tool giving
+giveMissingTools()
+
+-- Re-give tools on respawn
+player.CharacterAdded:Connect(function()
+    task.wait(1)
+    giveMissingTools()
+end)
+
+--// Button click logic
 button.MouseButton1Click:Connect(function()
     animateButtonPress()
 
@@ -160,10 +206,13 @@ button.MouseButton1Click:Connect(function()
     else
         teleporting = true
         button.Text = "Stop Gold Farm"
+
+        resetStageAttributes()
         task.spawn(teleportSequence)
     end
 end)
 
+--// Dragging GUI
 local dragging = false
 local dragStart, startPos
 
@@ -196,9 +245,8 @@ frame.InputChanged:Connect(function(input)
     end
 end)
 
-local VirtualUser = game:GetService('VirtualUser')
- 
-game:GetService('Players').LocalPlayer.Idled:Connect(function()
+--// Anti-AFK
+player.Idled:Connect(function()
     VirtualUser:CaptureController()
     VirtualUser:ClickButton2(Vector2.new())
 end)
