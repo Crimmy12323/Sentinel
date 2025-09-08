@@ -192,7 +192,7 @@ giveMissingTools()
 
 -- Re-give tools on respawn
 player.CharacterAdded:Connect(function()
-    task.wait(1)
+    task.wait(0.3)
     giveMissingTools()
 end)
 
