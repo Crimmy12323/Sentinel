@@ -128,7 +128,7 @@ local function teleportSequence()
             true
         )
 
-        task.wait(5.5)
+        task.wait(5.45)
     end
 
     cleanupPlatforms()
