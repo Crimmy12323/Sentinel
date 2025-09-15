@@ -75,15 +75,15 @@ local teleporting = false
 
 --// Teleport positions
 local positions = {
-    Vector3.new(58.99, -20.96, -465.08),
-    Vector3.new(57.50, -20.23, -761.23),
-    Vector3.new(58.25, -20.23, -1136.79),
-    Vector3.new(55.81, -20.23, -1548.85),
-    Vector3.new(58.66, -20.23, -1925.04),
-    Vector3.new(59.22, -20.23, -2320.42),
-    Vector3.new(60.51, -30.23, -2705.64),
-    Vector3.new(65.55, -20.23, -3000.64),
-    Vector3.new(55.53, -914.25, -3569.47)
+    Vector3.new(58.99, -7.96, -465.08),
+    Vector3.new(57.50, -7.23, -761.23),
+    Vector3.new(58.25, -7.23, -1136.79),
+    Vector3.new(55.81, -7.23, -1548.85),
+    Vector3.new(58.66, -7.23, -1925.04),
+    Vector3.new(59.22, -7.23, -2320.42),
+    Vector3.new(60.51, -7.23, -2705.64),
+    Vector3.new(65.55, -7.23, -3000.64),
+    Vector3.new(55.53, -919.25, -3599.47)
 }
 
 --// Cleanup helper
@@ -101,12 +101,42 @@ local function getRoot()
     return char:WaitForChild("HumanoidRootPart")
 end
 
+--// Noclip helper
+local function setNoclip(enabled)
+    local char = player.Character
+    if not char then return end
+    for _, part in ipairs(char:GetChildren()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = not enabled
+        end
+    end
+end
+
+--// Clear all contents inside each Water part in Stages
+local function clearWaterContents()
+    for i = 1, 7 do
+        local stage = workspace.Stages:FindFirstChild(tostring(i))
+        if stage then
+            local water = stage:FindFirstChild("Water")
+            if water then
+                for _, child in ipairs(water:GetChildren()) do
+                    child:Destroy()
+                end
+            end
+        end
+    end
+end
+
 --// Teleport sequence logic
 local function teleportSequence()
     local rootPart = getRoot()
 
+    setNoclip(true)
+
     for i, pos in ipairs(positions) do
         if not teleporting then break end
+
+        clearWaterContents()
 
         rootPart.CFrame = CFrame.new(pos)
 
@@ -131,11 +161,13 @@ local function teleportSequence()
         task.wait(5.5)
     end
 
+    setNoclip(false)
+
     cleanupPlatforms()
 
     if teleporting then
         bar:TweenSize(UDim2.new(0, 0, 1, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.5, true)
-        task.wait(5)
+        task.wait(0.0001)
         teleportSequence()
     else
         button.Text = "Start Gold Farm"
@@ -187,12 +219,10 @@ local function giveMissingTools()
     end
 end
 
--- Initial tool giving
 giveMissingTools()
 
--- Re-give tools on respawn
 player.CharacterAdded:Connect(function()
-    task.wait(0.3)
+    task.wait(0.1)
     giveMissingTools()
 end)
 
